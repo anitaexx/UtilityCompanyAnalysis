@@ -1,10 +1,9 @@
----Creating 4 Tables---
+USE [UtilityCompany];
+GO
 
 --------------------------
 ---The Customer Table---
 --------------------------
-USE [UtilityCompany];
-GO
 
 CREATE TABLE DimCustomer (
 	CustomerID INT IDENTITY(1,1) PRIMARY KEY,
@@ -28,8 +27,6 @@ CREATE TABLE DimCustomer (
 --------------------------
 ---Account Table---
 --------------------------
-USE [UtilityCompany];
-GO
 
 CREATE TABLE DimAccount (
 	AccountID INT PRIMARY KEY,
@@ -48,8 +45,6 @@ CREATE TABLE DimAccount (
 -------------------------------
 ---The Transction Type Table---
 -------------------------------
-USE [UtilityCompany];
-GO
 
 CREATE TABLE DimTransactionType (
     TransactionTypeID INT PRIMARY KEY,
@@ -91,6 +86,15 @@ CREATE TABLE FactUsage (
 ---ADD CONSTRAINT FK_FactUsage_DimDate
 ---FOREIGN KEY (CreatedDate) REFERENCES DimDate(FullDate);
 
+--UPDATE f
+--SET f.DateID = d.DateID
+--FROM dbo.FactUsage f
+--JOIN dbo.DimDate d
+--	ON f.CreatedDate = d.FullDate
+
+--alter table FactUsage 
+--drop column AccountNumber
+
 
 ---Alterations for the file import ---
 ---ALTER TABLE DimCustomer
@@ -112,26 +116,15 @@ Select * from dbo.DimCustomer;
 Select * from dbo.DimTransactionType;
 Select * from dbo.DimDate;
 
-
-----mitake wiht table recreat--
 --DROP TABLE DimCustomer
 --DROP TABLE DimAccount
 --DROP TABLE FactUsage
 --DROP TABLE DimDate
 --DROP TABLE DimTransactiontype
 
---ALTER TABLE DimCustomer
---DROP CONSTRAINT FK_DimCustomer_Date;
-
---alter table FactUsage 
---drop column AccountNumber
-
---alter table DimAccount
---drop column CustomerID
 
 --alter table DimAccount
 --drop column DateID
-
 --alter table DimCustomer
 --drop column DateID
 
@@ -160,19 +153,11 @@ Select * from dbo.DimDate;
 --JOIN dbo.DimDate d
 --	ON a.CreateDate = d.FullDate
 
---UPDATE f
---SET f.DateID = d.DateID
---FROM dbo.FactUsage f
---JOIN dbo.DimDate d
---	ON f.CreatedDate = d.FullDate
-
 --UPDATE c
 --SET c.DateID = d.DateID
 --FROM dbo.DimCustomer c
 --JOIN dbo.DimDate d
 --	ON c.CreateDate = d.FullDate
-
-
 
 --Disable the FK temporarily
 --ALTER TABLE dbo.DimAccount NOCHECK CONSTRAINT FK__DimAccoun__Custo__1AD3FDA4;
@@ -186,11 +171,13 @@ Select * from dbo.DimDate;
 --ALTER TABLE FactUsage
 --DROP CONSTRAINT FK__FactUsage__Custo__1F98B2C1;
 
-
-
 ---- System Query to get constraint name--
 --SELECT 
 --    name, 
 --    parent_object_id 
 --FROM sys.foreign_keys
 --WHERE parent_object_id = OBJECT_ID('DimAccount');
+
+--DELETE FROM FactUsage
+
+
