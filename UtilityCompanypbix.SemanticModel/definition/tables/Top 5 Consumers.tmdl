@@ -1,0 +1,68 @@
+table 'Top 5 Consumers'
+	lineageTag: e03e1c1b-0755-4782-8924-94592480738a
+
+	column CustomerID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 91adfa40-9cd6-41ea-af19-2282456a2e50
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column FullName
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(101)
+		lineageTag: b4dd5363-c84c-4188-be2d-618c8278e5a8
+		summarizeBy: none
+		sourceColumn: FullName
+
+		annotation SummarizationSetBy = Automatic
+
+	column CompanyName
+		dataType: string
+		sourceProviderType: nvarchar(50)
+		lineageTag: d260abe8-1ef0-4077-a3fa-0a510640a69f
+		summarizeBy: none
+		sourceColumn: CompanyName
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalConsumption
+		dataType: double
+		sourceProviderType: decimal(38, 2)
+		lineageTag: bfac5531-f56a-4ca3-940f-7df69c575bcf
+		summarizeBy: sum
+		sourceColumn: TotalConsumption
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column AmountDue
+		dataType: double
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(38, 2)
+		lineageTag: abb097b1-ba34-404d-ace3-bd63b91cc052
+		summarizeBy: sum
+		sourceColumn: AmountDue
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Top 5 Consumers' = m
+		mode: directQuery
+		source =
+				let
+				    Source = Sql.Database("(localdb)\MSSQLLocalDB", "UtilityCompany", [Query="SELECT  CustomerID#(lf)       ,CONCAT(FirstName,' ',LastName) AS FullName#(lf)       ,CompanyName#(lf)       ,TotalConsumption#(lf)       ,AmountDue#(lf)FROM (#(lf)    SELECT #(lf)        C.CustomerID#(lf)       ,C.FirstName#(lf)       ,C.LastName#(lf)       ,C.CompanyName#(lf)       ,SUM(F.UsageQuantity) AS TotalConsumption#(lf)       ,SUM(CASE WHEN F.[TransactionTypeID]  = 1 THEN F.[TransactionAmount] + F.TDUAmount ELSE 0 END)#(lf)       -SUM(CASE WHEN F.[TransactionTypeID]  = 2 THEN F.[TransactionAmount] + F.TDUAmount ELSE 0 END) #(lf)       -SUM(CASE WHEN F.[TransactionTypeID]  = 3 THEN F.[TransactionAmount] + F.TDUAmount ELSE 0 END)#(lf)       +SUM(CASE WHEN F.[TransactionTypeID]  = 4 THEN F.[TransactionAmount] + F.TDUAmount ELSE 0 END) AS AmountDue#(lf)       ,RANK() OVER (ORDER BY SUM(F.UsageQuantity) DESC) AS ConsumptionRank#(lf)    FROM FactUsage F#(lf)    JOIN DimAccount A ON F.AccountID = A.AccountID#(lf)    JOIN DimCustomer C ON A.CustomerID = C.CustomerID#(lf)    WHERE F.TransactionTypeID = 1   -- only billed usage#(lf)    GROUP BY #(lf)        C.CustomerID,#(lf)        C.FirstName,#(lf)        C.LastName,#(lf)        C.CompanyName#(lf)) AS R1#(lf)WHERE ConsumptionRank <= 5#(lf)", CommandTimeout=#duration(694, 10, 40, 0)])
+				in
+				    Source
+
+	changedProperty = Name
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

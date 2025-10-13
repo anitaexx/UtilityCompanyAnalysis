@@ -1,0 +1,35 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-CA
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_QueryOrder = ["DimAccount","DimCustomer","DimDate","DimTransactionType","FactUsage","FlaggedFraud","LateFeeWaiver","RefundAbuse","Top 5 Consumers","TDU"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBIDesktopVersion = 2.142.1277.0 (25.04)+014fde450f93691fc9537f0758d73d1c5df153ef
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table DimAccount
+ref table DateTableTemplate_f15b55d9-05ec-4e2c-876c-3997ad745bc2
+ref table LocalDateTable_79aeea66-a91e-4441-b9e6-88cf88232d23
+ref table DimCustomer
+ref table LocalDateTable_179a79de-62da-429a-b092-8c0cf215b3bc
+ref table LocalDateTable_8f0d7527-1cca-4f48-8f2a-7e0da34bd4d5
+ref table DimDate
+ref table LocalDateTable_f26e82fc-7724-495e-95a5-64a73018504d
+ref table DimTransactionType
+ref table FactUsage
+ref table LocalDateTable_ff1be5f5-57f7-4060-b1d2-4008765db0b2
+ref table FlaggedFraud
+ref table LateFeeWaiver
+ref table RefundAbuse
+ref table 'Top 5 Consumers'
+ref table TDU
+
+ref cultureInfo en-US
+

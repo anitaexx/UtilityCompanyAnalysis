@@ -1,0 +1,77 @@
+relationship 08a9e90e-0bc6-44da-8aa3-b2751131de9f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimAccount.CreateDate
+	toColumn: LocalDateTable_79aeea66-a91e-4441-b9e6-88cf88232d23.Date
+
+relationship 3797412f-6b0d-4587-9376-68e4caf7bd0b
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimCustomer.CreateDate
+	toColumn: LocalDateTable_179a79de-62da-429a-b092-8c0cf215b3bc.Date
+
+relationship 605c0c0b-a24c-4fc7-8da1-db9d62d6f76d
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimCustomer.DOB
+	toColumn: LocalDateTable_8f0d7527-1cca-4f48-8f2a-7e0da34bd4d5.Date
+
+relationship 44ebadd2-8fc6-4ff9-96e4-12a1dc028911
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DimDate.FullDate
+	toColumn: LocalDateTable_f26e82fc-7724-495e-95a5-64a73018504d.Date
+
+relationship b48734b7-9017-4961-ba71-02e56449be42
+	joinOnDateBehavior: datePartOnly
+	fromColumn: FactUsage.CreatedDate
+	toColumn: LocalDateTable_ff1be5f5-57f7-4060-b1d2-4008765db0b2.Date
+
+relationship c4cd0640-8627-437c-82ff-a08ecda4ccae
+	fromColumn: FactUsage.AccountID
+	toColumn: DimAccount.AccountID
+
+	annotation PBI_IsFromSource = FS
+
+relationship 6fad8c31-57dd-43aa-8ade-90cdb5ed8320
+	fromColumn: FactUsage.CustomerID
+	toColumn: DimCustomer.CustomerID
+
+	annotation PBI_IsFromSource = FS
+
+relationship a9afd51e-571b-4848-adc8-2e4a5380a064
+	fromColumn: FactUsage.DateID
+	toColumn: DimDate.DateID
+
+	annotation PBI_IsFromSource = FS
+
+relationship c0a5fc53-d371-4329-8549-1014e3e0e421
+	fromColumn: FactUsage.TransactionTypeID
+	toColumn: DimTransactionType.TransactionTypeID
+
+	annotation PBI_IsFromSource = FS
+
+relationship 76750bab-701c-8aae-45df-958154df31c7
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: DimCustomer.CustomerID
+	toColumn: FlaggedFraud.CustomerID
+
+relationship 7f09a507-31a6-f129-ddb0-bd196eca02fe
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: DimCustomer.CustomerID
+	toColumn: LateFeeWaiver.CustomerID
+
+relationship bc2e5c50-75d1-1770-beb2-92290523af6a
+	fromColumn: RefundAbuse.CustomerID
+	toColumn: DimCustomer.CustomerID
+
+relationship fe0eee33-17d1-9275-1604-05fd55432844
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: DimCustomer.CustomerID
+	toColumn: TDU.CustomerID
+
+relationship 91e0c5a1-246f-cabd-9f81-886c06d409c2
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: DimCustomer.CustomerID
+	toColumn: 'Top 5 Consumers'.CustomerID
+

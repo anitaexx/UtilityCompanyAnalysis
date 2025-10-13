@@ -1,0 +1,191 @@
+table FactUsage
+	lineageTag: b1642088-32b6-4d7c-86f3-10840b89942c
+
+	measure TotalPayments =
+			
+			CALCULATE(
+			    SUM(FactUsage[FullAmount]),
+			    FILTER(
+			        FactUsage,
+			        FactUsage[TransactionTypeID] = 2
+			    )
+			)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: c2f9ec6d-f37e-462e-bc18-ce1786083a0d
+
+	measure TotalRefunds =
+			
+			CALCULATE(
+			    SUM(FactUsage[FullAmount]),
+			    FILTER(
+			        FactUsage,
+			        FactUsage[TransactionTypeID] = 3
+			    )
+			)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: f9262f9a-5e22-4a6d-9bae-e17d3ddfe6f0
+
+	measure RefundPercent = ```
+			DIVIDE([TotalRefunds], [TotalPayments], 0)
+			
+			```
+		lineageTag: 427f679f-d2da-4de9-8980-88ee76144cb6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Total_TDU_Billed = CALCULATE(Sum(FactUsage[TDUAmount]),FactUsage[TransactionTypeID] = 1)
+		lineageTag: 426bef90-d485-4acf-bb6b-2191ea1d4aad
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Total_TDU_Paid_Refunded = CALCULATE(SUM(FactUsage[TDUAmount]),FILTER(FactUsage, FactUsage[TransactionTypeID] = 2 || FactUsage[TransactionTypeID] = 3))
+		lineageTag: 40c2c85e-f68c-477b-b8da-6b13f4aacbee
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Total_TDU_Variance =
+			VAR diff = [Total_TDU_Billed] - [Total_TDU_Paid_Refunded]
+			                     RETURN  if(diff > 0, diff)
+		lineageTag: e911baa7-5965-41f0-8a50-40df9550aca3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CCCtoTotalTDU_Variance = DIVIDE([CCC_TDU_Variance],[Total_TDU_Variance],0)
+		lineageTag: ca93f16f-b3fd-45e7-af8f-2539457d20d0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CCC_TDU_Billed = ```
+			CALCULATE(Sum(FactUsage[TDUAmount]),FILTER(DimCustomer, DimCustomer[CCC] = "Y"),FactUsage[TransactionTypeID] = 1)
+			
+			```
+		lineageTag: 7a18c3a5-e6de-45a3-831f-0cf4c3a71415
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CCC_TDU_Paid_Refunded = ```
+			CALCULATE(SUM(FactUsage[TDUAmount]),FILTER(DimCustomer, DimCustomer[CCC] = "Y"),FILTER(FactUsage, FactUsage[TransactionTypeID] = 2 || FactUsage[TransactionTypeID] = 3))
+			
+			```
+		lineageTag: 9fa37dc1-a9da-45c8-a163-48206b36953b
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CCC_TDU_Variance =
+			VAR diff = [CCC_TDU_Billed] - [CCC_TDU_Paid_Refunded]
+			                     RETURN  if(diff > 0, diff)
+		lineageTag: 3b674af3-c8e8-47be-a82d-09e0150718f5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TransactionID
+		dataType: int64
+		formatString: 0
+		lineageTag: 2e66af47-d271-433d-94bc-5dc472d8854d
+		summarizeBy: count
+		sourceColumn: TransactionID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CreatedDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 0baa563f-6307-4c9c-a0b7-1d3c7e73a117
+		summarizeBy: none
+		sourceColumn: CreatedDate
+
+		variation Variation
+			isDefault
+			relationship: b48734b7-9017-4961-ba71-02e56449be42
+			defaultHierarchy: LocalDateTable_ff1be5f5-57f7-4060-b1d2-4008765db0b2.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CustomerID
+		dataType: int64
+		formatString: 0
+		lineageTag: 35e43894-f1d9-4a07-ace3-59d24febe666
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccountID
+		dataType: int64
+		formatString: 0
+		lineageTag: 4c6c93aa-d945-4f3e-8eb8-6b33f73d54b4
+		summarizeBy: none
+		sourceColumn: AccountID
+
+		annotation SummarizationSetBy = Automatic
+
+	column TransactionTypeID
+		dataType: int64
+		formatString: 0
+		lineageTag: 48f48af6-0d0b-4532-bd04-84169e88c5cd
+		summarizeBy: none
+		sourceColumn: TransactionTypeID
+
+		annotation SummarizationSetBy = Automatic
+
+	column TransactionAmount
+		dataType: double
+		lineageTag: cf43acbd-cc10-4a05-8da1-26840b8dff8f
+		summarizeBy: sum
+		sourceColumn: TransactionAmount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column UsageQuantity
+		dataType: double
+		lineageTag: 62d79033-b64a-4c99-8131-daf0e549e63f
+		summarizeBy: sum
+		sourceColumn: UsageQuantity
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column TDUAmount
+		dataType: double
+		lineageTag: 796e1dd9-f1af-4576-8c18-2bb67a4fa59d
+		summarizeBy: sum
+		sourceColumn: TDUAmount
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column DateID
+		dataType: int64
+		formatString: 0
+		lineageTag: 1e7f9d04-e9f6-45b2-92d1-b35be94c3073
+		summarizeBy: none
+		sourceColumn: DateID
+
+		annotation SummarizationSetBy = Automatic
+
+	column FullAmount = FactUsage[TransactionAmount] + FactUsage[TDUAmount]
+		lineageTag: 88d71e4d-9432-4c63-93d8-fa75091a6bf7
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition FactUsage = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Databases("(localdb)\MSSQLLocalDB", [CommandTimeout=#duration(69, 10, 40, 0)]),
+				    UtilityCompany = Source{[Name="UtilityCompany"]}[Data],
+				    dbo_FactUsage = UtilityCompany{[Schema="dbo",Item="FactUsage"]}[Data]
+				in
+				    dbo_FactUsage
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,97 @@
+table LateFeeWaiver
+	lineageTag: 9219fbb2-3cab-43cc-9e0a-a320957bd55c
+
+	measure SUMOFFEES = SUM(LateFeeWaiver[TotalLateFees])
+		lineageTag: 9b574e08-d68e-4065-a13c-900cf1f7173d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CustomerID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 344a8fd5-07b7-4691-8cf0-3857b9e02e66
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column FullName
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(101)
+		lineageTag: 9e736e4b-cab8-42c3-811c-6b9cb68adf14
+		summarizeBy: none
+		sourceColumn: FullName
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerType
+		dataType: string
+		sourceProviderType: nvarchar(50)
+		lineageTag: a9a2a3b8-e6e0-4bd5-942e-5c2450232edb
+		summarizeBy: none
+		sourceColumn: CustomerType
+
+		annotation SummarizationSetBy = Automatic
+
+	column CompanyName
+		dataType: string
+		sourceProviderType: nvarchar(50)
+		lineageTag: 0af380e1-00fd-4ffa-82b2-23a9a30cc0ff
+		summarizeBy: none
+		sourceColumn: CompanyName
+
+		annotation SummarizationSetBy = Automatic
+
+	column PhoneNumber
+		dataType: string
+		sourceProviderType: nvarchar(100)
+		lineageTag: f6ff7de7-6e26-4c5b-915b-cc43cf7408b7
+		summarizeBy: none
+		sourceColumn: PhoneNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmailID
+		dataType: string
+		sourceProviderType: nvarchar(100)
+		lineageTag: a36b0e73-76bf-4bb9-af97-01e66ddf4be8
+		summarizeBy: none
+		sourceColumn: EmailID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CCC
+		dataType: string
+		sourceProviderType: nvarchar(50)
+		lineageTag: b90b3095-d6da-45fc-b210-56b54467aab6
+		summarizeBy: none
+		sourceColumn: CCC
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalLateFees
+		dataType: double
+		sourceProviderType: decimal(38, 2)
+		lineageTag: 01ff7e25-394b-4172-9b78-9ece12f27f7a
+		summarizeBy: sum
+		sourceColumn: TotalLateFees
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition LateFeeWaiver = m
+		mode: directQuery
+		source =
+				let
+				    Source = Sql.Database("(localdb)\MSSQLLocalDB", "UtilityCompany", [Query=" SELECT  C.[CustomerID]#(lf)#(tab)#(tab),CONCAT(C.FirstName,' ',C.LastName) AS FullName#(lf)#(tab)#(tab),C.[CustomerType] #(lf)#(tab)#(tab),CASE WHEN C.[CompanyName] = '' THEN 'RESIDENT' ELSE C.[CompanyName] END AS CompanyName#(lf)#(tab)#(tab),C.[PhoneNumber]#(lf)#(tab)#(tab),C.[EmailID]#(tab)#(tab)#(lf)#(tab)#(tab),C.[CCC]#(lf)#(tab)#(tab),SUM(CASE WHEN F.[TransactionTypeID] = 4 THEN F.TransactionAmount + F.TDUAmount ELSE 0 END) AS TotalLateFees#(lf)FROM FactUsage F#(lf)JOIN DimCustomer C ON F.[CustomerID] = C.[CustomerID]#(lf)WHERE C.[CCC] = 'Y'#(lf)GROUP BY C.[CustomerID]#(lf)#(tab)#(tab),C.[FirstName]#(lf)#(tab)#(tab),C.[LastName]#(lf)#(tab)#(tab),C.[CustomerType] #(lf)#(tab)#(tab),C.[CompanyName]#(lf)#(tab)#(tab),C.[PhoneNumber]#(lf)#(tab)#(tab),C.[EmailID]#(tab)#(tab)#(lf)#(tab)#(tab),C.[CCC]#(lf)HAVING SUM(CASE WHEN F.[TransactionTypeID] = 4 THEN F.TransactionAmount + F.TDUAmount ELSE 0 END) > 0", CommandTimeout=#duration(69, 10, 40, 0)])
+				in
+				    Source
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

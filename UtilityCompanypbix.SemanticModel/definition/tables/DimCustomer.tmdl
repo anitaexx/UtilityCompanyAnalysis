@@ -1,0 +1,175 @@
+table DimCustomer
+	lineageTag: 4b0cb89d-f831-446a-80de-5b786a578df1
+
+	measure TotalCustomers = ```
+			
+			DISTINCTCOUNT ( DimCustomer[CustomerID] )
+			
+			```
+		formatString: 0
+		lineageTag: 4a6f9c97-38d9-4d82-bb68-03cc39714272
+
+	column CustomerID
+		dataType: int64
+		formatString: 0
+		lineageTag: f0fb4b58-2e68-40e0-b8f5-fccb8e2a16a8
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CreateDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 595ba93a-58a2-457d-91bd-a95350391355
+		summarizeBy: none
+		sourceColumn: CreateDate
+
+		variation Variation
+			isDefault
+			relationship: 3797412f-6b0d-4587-9376-68e4caf7bd0b
+			defaultHierarchy: LocalDateTable_179a79de-62da-429a-b092-8c0cf215b3bc.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CustomerType
+		dataType: string
+		lineageTag: 4675c378-b870-4bd2-9e28-edef3b16c165
+		summarizeBy: none
+		sourceColumn: CustomerType
+
+		annotation SummarizationSetBy = Automatic
+
+	column CCC
+		dataType: string
+		lineageTag: 9f5e5786-c763-4984-b86d-889b03907254
+		summarizeBy: none
+		sourceColumn: CCC
+
+		annotation SummarizationSetBy = Automatic
+
+	column FirstName
+		dataType: string
+		lineageTag: 7c215475-57e4-4ba9-b1f3-5a8b7326f1a9
+		summarizeBy: none
+		sourceColumn: FirstName
+
+		annotation SummarizationSetBy = Automatic
+
+	column LastName
+		dataType: string
+		lineageTag: 5e1c5366-379c-4520-b33d-cf97b6e0deb7
+		summarizeBy: none
+		sourceColumn: LastName
+
+		annotation SummarizationSetBy = Automatic
+
+	column DOB
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d22e726b-a65d-4296-b503-1ef8088aa9a5
+		summarizeBy: none
+		sourceColumn: DOB
+
+		variation Variation
+			isDefault
+			relationship: 605c0c0b-a24c-4fc7-8da1-db9d62d6f76d
+			defaultHierarchy: LocalDateTable_8f0d7527-1cca-4f48-8f2a-7e0da34bd4d5.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column BusinessNumber
+		dataType: string
+		lineageTag: ef78b97c-bf39-4038-b57a-7e326a24bd8a
+		summarizeBy: none
+		sourceColumn: BusinessNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column SSN
+		dataType: string
+		lineageTag: ec354368-b9c6-4b60-8a65-d5a980fa10d8
+		summarizeBy: none
+		sourceColumn: SSN
+
+		annotation SummarizationSetBy = Automatic
+
+	column CompanyName
+		dataType: string
+		lineageTag: f70a3150-93c5-4e67-907d-23e35223d733
+		summarizeBy: none
+		sourceColumn: CompanyName
+
+		annotation SummarizationSetBy = Automatic
+
+	column EmailID
+		dataType: string
+		lineageTag: 324c321d-3395-4466-a8d7-719fcf8f7c61
+		summarizeBy: none
+		sourceColumn: EmailID
+
+		annotation SummarizationSetBy = Automatic
+
+	column PhoneNumber
+		dataType: string
+		lineageTag: bdf88c20-fec7-4192-8194-2e785a2f0a01
+		summarizeBy: none
+		sourceColumn: PhoneNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column Address
+		dataType: string
+		lineageTag: 73ee8688-dd7b-4b9a-9f19-f69908aecdbb
+		summarizeBy: none
+		sourceColumn: Address
+
+		annotation SummarizationSetBy = Automatic
+
+	column City
+		dataType: string
+		lineageTag: ed6452d2-f3b0-432c-aad9-366d6d457011
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: City
+
+		annotation SummarizationSetBy = Automatic
+
+	column State
+		dataType: string
+		lineageTag: eb2f87df-efef-427c-8568-e8f48c9bc8fe
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: State
+
+		annotation SummarizationSetBy = Automatic
+
+	column Country
+		dataType: string
+		lineageTag: 12bbcf68-1c69-4c39-83cf-794673a96a19
+		dataCategory: County
+		summarizeBy: none
+		sourceColumn: Country
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimCustomer = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Databases("(localdb)\MSSQLLocalDB", [CommandTimeout=#duration(69, 10, 40, 0)]),
+				    UtilityCompany = Source{[Name="UtilityCompany"]}[Data],
+				    dbo_DimCustomer = UtilityCompany{[Schema="dbo",Item="DimCustomer"]}[Data],
+				    #"Replaced Value" = Table.ReplaceValue(dbo_DimCustomer,"","NA",Replacer.ReplaceValue,{"BusinessNumber"}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Replaced Value","","NA",Replacer.ReplaceValue,{"SSN"})
+				in
+				    #"Replaced Value1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

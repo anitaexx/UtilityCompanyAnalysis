@@ -1,0 +1,32 @@
+table DimTransactionType
+	lineageTag: f988d4e6-329e-4a10-a608-33c29f97dea4
+
+	column TransactionTypeID
+		dataType: int64
+		formatString: 0
+		lineageTag: 579f803b-65eb-41f2-af9a-2d91fd32ec0e
+		summarizeBy: none
+		sourceColumn: TransactionTypeID
+
+		annotation SummarizationSetBy = Automatic
+
+	column TransactionName
+		dataType: string
+		lineageTag: c38886ba-bb3f-4259-ac8d-35563e0a291b
+		summarizeBy: none
+		sourceColumn: TransactionName
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimTransactionType = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Databases("(localdb)\MSSQLLocalDB", [CommandTimeout=#duration(69, 10, 40, 0)]),
+				    UtilityCompany = Source{[Name="UtilityCompany"]}[Data],
+				    dbo_DimTransactionType = UtilityCompany{[Schema="dbo",Item="DimTransactionType"]}[Data]
+				in
+				    dbo_DimTransactionType
+
+	annotation PBI_ResultType = Table
+

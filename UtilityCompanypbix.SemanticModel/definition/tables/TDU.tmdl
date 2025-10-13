@@ -1,0 +1,92 @@
+table TDU
+	lineageTag: 8dedd150-5a22-4d59-aa75-81708e06195b
+
+	measure TDU_Varaiance_CCC = [Total_TDU_Variance]
+		lineageTag: da5bfa29-188c-4555-90b4-f8cc7ac0e7a0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CustomerID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: 8d0f44e7-52b3-467c-8742-b74d96312917
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column FullName
+		dataType: string
+		isNullable: false
+		sourceProviderType: nvarchar(101)
+		lineageTag: e5bc3460-c797-476a-8389-4cd20bd445a4
+		summarizeBy: none
+		sourceColumn: FullName
+
+		annotation SummarizationSetBy = Automatic
+
+	column PhoneNumber
+		dataType: string
+		sourceProviderType: nvarchar(100)
+		lineageTag: 142b85c9-5722-48ac-8157-e1c54a69329f
+		summarizeBy: none
+		sourceColumn: PhoneNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalTDUCharged
+		dataType: double
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(38, 2)
+		lineageTag: b1b02944-7c22-45dc-acac-ad4f22b3e4cf
+		summarizeBy: sum
+		sourceColumn: TotalTDUCharged
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalTDUPaid
+		dataType: double
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(38, 2)
+		lineageTag: 8a8553be-6570-403d-ad55-26a4b687c6c7
+		summarizeBy: sum
+		sourceColumn: TotalTDUPaid
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalTDURefunded
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: decimal(38, 2)
+		lineageTag: b103c9b1-8a26-447a-8912-896d9b66cc71
+		summarizeBy: sum
+		sourceColumn: TotalTDURefunded
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column TDUVariance
+		dataType: double
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		sourceProviderType: decimal(38, 2)
+		lineageTag: c551080c-df08-42b6-a4b8-3cab36f638b9
+		summarizeBy: sum
+		sourceColumn: TDUVariance
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TDU = m
+		mode: directQuery
+		source =
+				let
+				    Source = Sql.Database("(localdb)\MSSQLLocalDB", "UtilityCompany", [Query="SELECT C.CustomerID#(lf)#(tab)  ,CONCAT(C.FirstName,' ',C.LastName) AS FullName#(lf)--    ,C.EmailID#(lf)      ,C.PhoneNumber#(lf)      ,SUM(CASE WHEN F.TransactionTypeID = 1 THEN F.TDUAmount ELSE 0 END) AS TotalTDUCharged#(lf)      ,SUM(CASE WHEN F.TransactionTypeID = 2 THEN F.TDUAmount ELSE 0 END) AS TotalTDUPaid#(lf)#(tab)  ,SUM(CASE WHEN F.TransactionTypeID = 3 THEN F.TDUAmount ELSE 0 END) AS TotalTDURefunded#(lf)      ,SUM(CASE WHEN F.TransactionTypeID = 1 THEN F.TDUAmount ELSE 0 END)#(lf)    -  SUM(CASE WHEN F.TransactionTypeID = 2 THEN F.TDUAmount ELSE 0 END) #(lf)#(tab)-  SUM(CASE WHEN F.TransactionTypeID = 3 THEN F.TDUAmount ELSE 0 END) AS TDUVariance#(lf)FROM FactUsage F#(lf)JOIN DimAccount A ON F.AccountID = A.AccountID#(lf)JOIN DimCustomer C ON A.CustomerID = C.CustomerID#(lf)WHERE C.[CCC] = 'Y'  #(lf)GROUP BY #(lf)    C.CustomerID,#(lf)    C.FirstName,#(lf)    C.LastName,#(lf)--#(tab)C.EmailID,#(lf)    C.PhoneNumber#(lf)HAVING       #(lf)#(tab)   SUM(CASE WHEN F.TransactionTypeID = 1 THEN F.TDUAmount ELSE 0 END)#(lf)    -  SUM(CASE WHEN F.TransactionTypeID = 2 THEN F.TDUAmount ELSE 0 END) #(lf)#(tab)-  SUM(CASE WHEN F.TransactionTypeID = 3 THEN F.TDUAmount ELSE 0 END) > 0", CommandTimeout=#duration(69, 10, 40, 0)])
+				in
+				    Source
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

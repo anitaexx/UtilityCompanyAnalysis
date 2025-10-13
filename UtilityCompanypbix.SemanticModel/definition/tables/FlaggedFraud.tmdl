@@ -1,0 +1,65 @@
+table FlaggedFraud
+	lineageTag: ca9727fb-edbf-42fd-ac77-098819ff4725
+
+	measure SuspiciousCustomers = ```
+			DISTINCTCOUNT(FlaggedFraud[CustomerID])
+			
+			```
+		formatString: 0
+		lineageTag: 4668f1d8-9421-47ab-987f-f20f4ff76ebe
+
+	measure PercentFlagged = DIVIDE([SuspiciousCustomers],DISTINCTCOUNT(DimCustomer[CustomerID]),0)
+		lineageTag: 11688bbb-8295-4886-b049-fda3796c4cba
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ServiceAddress
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 9eee26cd-0a6b-4ecc-86db-4a8f180752ea
+		summarizeBy: none
+		sourceColumn: ServiceAddress
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: eb021a98-18bc-4155-be0b-5cfdb6ae182c
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerType
+		dataType: string
+		sourceProviderType: nvarchar(50)
+		lineageTag: 9dbd3683-ace8-44f3-8761-17401770b992
+		summarizeBy: none
+		sourceColumn: CustomerType
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccountIDs
+		dataType: string
+		sourceProviderType: nvarchar(4000)
+		lineageTag: cde787c7-9691-4398-9a37-afdf04068116
+		summarizeBy: none
+		sourceColumn: AccountIDs
+
+		annotation SummarizationSetBy = Automatic
+
+	partition FlaggedFraud = m
+		mode: directQuery
+		source =
+				let
+				    Source = Sql.Database("(localdb)\MSSQLLocalDB", "UtilityCompany", [Query="SELECT  A.ServiceAddress#(lf)       ,C.CustomerID#(lf)       ,C.CustomerType#(lf)       ,STRING_AGG(A.AccountID, ',') AS AccountIDs#(lf)FROM DimAccount A#(lf)JOIN DimCustomer C #(lf)    ON A.CustomerID = C.CustomerID#(lf)GROUP BY #(lf)#(tab)#(tab) A.ServiceAddress#(lf)#(tab)#(tab),C.CustomerID#(lf)#(tab)#(tab),C.CustomerType#(lf)HAVING COUNT(DISTINCT A.AccountID) > 1 ", CommandTimeout=#duration(6, 22, 40, 0)])
+				in
+				    Source
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

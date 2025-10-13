@@ -1,0 +1,106 @@
+table DimDate
+	lineageTag: 52fb69ec-2556-409f-9be1-70171ab927e1
+
+	column DateID
+		dataType: int64
+		formatString: 0
+		lineageTag: f8979fd7-7329-44d6-aa09-3e39168cb28d
+		summarizeBy: none
+		sourceColumn: DateID
+
+		annotation SummarizationSetBy = Automatic
+
+	column FullDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 298c7b96-d74d-48dc-b8d7-1aeef5d8b9f0
+		summarizeBy: none
+		sourceColumn: FullDate
+
+		variation Variation
+			isDefault
+			relationship: 44ebadd2-8fc6-4ff9-96e4-12a1dc028911
+			defaultHierarchy: LocalDateTable_f26e82fc-7724-495e-95a5-64a73018504d.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: e2350e65-caed-4b4e-9417-c432230f7ca2
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	column Month
+		dataType: int64
+		formatString: 0
+		lineageTag: 3372577b-3f8f-4294-9b58-01691de9a268
+		summarizeBy: none
+		sourceColumn: Month
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = User
+
+	column Day
+		dataType: int64
+		formatString: 0
+		lineageTag: 24dfb2af-8da6-40a2-96f6-c4abb9cc0c0d
+		summarizeBy: sum
+		sourceColumn: Day
+
+		annotation SummarizationSetBy = Automatic
+
+	column MonthName
+		dataType: string
+		lineageTag: 50724498-e848-4140-a8e6-b3f159da78c9
+		summarizeBy: none
+		sourceColumn: MonthName
+		sortByColumn: Month
+
+		changedProperty = SortByColumn
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayOfWeek
+		dataType: int64
+		formatString: 0
+		lineageTag: ddd46d0d-6f90-4d51-96e4-e60544e80e5f
+		summarizeBy: sum
+		sourceColumn: DayOfWeek
+
+		annotation SummarizationSetBy = Automatic
+
+	column DayName
+		dataType: string
+		lineageTag: e581c98b-588a-4eb1-b085-1fdd12fb2d81
+		summarizeBy: none
+		sourceColumn: DayName
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		dataType: int64
+		formatString: 0
+		lineageTag: 93b9881b-542f-458f-99a4-2a7b03505a16
+		summarizeBy: sum
+		sourceColumn: Quarter
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimDate = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Databases("(localdb)\MSSQLLocalDB", [CommandTimeout=#duration(69, 10, 40, 0)]),
+				    UtilityCompany = Source{[Name="UtilityCompany"]}[Data],
+				    dbo_DimDate = UtilityCompany{[Schema="dbo",Item="DimDate"]}[Data]
+				in
+				    dbo_DimDate
+
+	annotation PBI_ResultType = Table
+

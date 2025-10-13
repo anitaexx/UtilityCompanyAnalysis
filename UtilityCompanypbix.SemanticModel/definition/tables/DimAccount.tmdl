@@ -1,0 +1,107 @@
+table DimAccount
+	lineageTag: 79d96f78-3bb3-4367-99a9-a5d9812326f0
+
+	column AccountID
+		dataType: int64
+		formatString: 0
+		lineageTag: a9db32ec-123c-49d4-a61b-6ee18a6a7f37
+		summarizeBy: none
+		sourceColumn: AccountID
+
+		annotation SummarizationSetBy = Automatic
+
+	column CreateDate
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 8f2f87de-3fe6-4cf5-9fa5-8483a8d0f47d
+		summarizeBy: none
+		sourceColumn: CreateDate
+
+		variation Variation
+			isDefault
+			relationship: 08a9e90e-0bc6-44da-8aa3-b2751131de9f
+			defaultHierarchy: LocalDateTable_79aeea66-a91e-4441-b9e6-88cf88232d23.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CustomerType
+		dataType: string
+		lineageTag: a8f2c7ad-618a-4463-9133-7ef69b518531
+		summarizeBy: none
+		sourceColumn: CustomerType
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccountNumber
+		dataType: string
+		lineageTag: a09ab4eb-36aa-4200-9fe6-e49293170a63
+		summarizeBy: none
+		sourceColumn: AccountNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	column BillingAddress
+		dataType: string
+		lineageTag: d15a26fb-7800-4f9f-9195-b59dc6d2dab6
+		dataCategory: Address
+		summarizeBy: none
+		sourceColumn: BillingAddress
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceAddress
+		dataType: string
+		lineageTag: 1f026ad1-93f3-48fb-99cb-f63dbb2b64c2
+		dataCategory: Address
+		summarizeBy: none
+		sourceColumn: ServiceAddress
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceType
+		dataType: string
+		lineageTag: 2545e3bb-9d02-45df-8f01-60a4dff1f8b6
+		summarizeBy: none
+		sourceColumn: ServiceType
+
+		annotation SummarizationSetBy = Automatic
+
+	column RatePlan
+		dataType: string
+		lineageTag: 3497598f-643c-4612-a27d-1d6ebfe0e25f
+		summarizeBy: none
+		sourceColumn: RatePlan
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccountStatus
+		dataType: string
+		lineageTag: 4ca342ca-216c-4b0b-a0f5-3ea94b19b3c7
+		summarizeBy: none
+		sourceColumn: AccountStatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerID
+		dataType: int64
+		formatString: 0
+		lineageTag: e2c3f6e1-e239-4199-a13b-a4254853c509
+		summarizeBy: count
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DimAccount = m
+		mode: import
+		source =
+				let
+				    Source = Sql.Databases("(localdb)\MSSQLLocalDB", [CommandTimeout=#duration(69, 10, 40, 0)]),
+				    UtilityCompany = Source{[Name="UtilityCompany"]}[Data],
+				    dbo_DimAccount = UtilityCompany{[Schema="dbo",Item="DimAccount"]}[Data]
+				in
+				    dbo_DimAccount
+
+	annotation PBI_ResultType = Table
+

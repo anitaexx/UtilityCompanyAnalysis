@@ -1,0 +1,148 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 41.10021655159364,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 170.04946759935066,
+            "y": 653.3989638780813
+          },
+          "nodeIndex": "DimAccount",
+          "nodeLineageTag": "79d96f78-3bb3-4367-99a9-a5d9812326f0",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 561.16706738773826,
+            "y": 0
+          },
+          "nodeIndex": "DimCustomer",
+          "nodeLineageTag": "4b0cb89d-f831-446a-80de-5b786a578df1",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 857.604254182255,
+            "y": 305.38250515893191
+          },
+          "nodeIndex": "DimDate",
+          "nodeLineageTag": "52fb69ec-2556-409f-9be1-70171ab927e1",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 0,
+            "y": 353.36901997606924
+          },
+          "nodeIndex": "DimTransactionType",
+          "nodeLineageTag": "f988d4e6-329e-4a10-a608-33c29f97dea4",
+          "size": {
+            "height": 128,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 337.06186654799046,
+            "y": 303.70427886045405
+          },
+          "nodeIndex": "FactUsage",
+          "nodeLineageTag": "b1642088-32b6-4d7c-86f3-10840b89942c",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 8
+        },
+        {
+          "location": {
+            "x": 1009.4389944575454,
+            "y": 32.895105137983606
+          },
+          "nodeIndex": "FlaggedFraud",
+          "nodeLineageTag": "ca9727fb-edbf-42fd-ac77-098819ff4725",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 7
+        },
+        {
+          "location": {
+            "x": 104.18606635147842,
+            "y": 4.7403034456563127
+          },
+          "nodeIndex": "LateFeeWaiver",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 607.6751020135398,
+            "y": 632.37738523276312
+          },
+          "nodeIndex": "RefundAbuse",
+          "size": {
+            "height": 289.08262986235479,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1577.4389944575455,
+            "y": 352.69948193904065
+          },
+          "nodeIndex": "TDU",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1293.4389944575455,
+            "y": 376.69948193904065
+          },
+          "nodeIndex": "Top 5 Consumers",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 56.447393005377933,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

@@ -1,0 +1,99 @@
+table RefundAbuse
+	lineageTag: cc1e161b-dec6-491b-8038-759c2601d71d
+
+	measure TotalCustomersRefundAbuse1 = ```
+			
+			CALCULATE (
+			    DISTINCTCOUNT (RefundAbuse[CustomerID]),
+			    FILTER (
+			        RefundAbuse,
+			        RefundAbuse[RefundAudit] = "Refund Abuse Flag"
+			    )
+			)
+			
+			```
+		formatString: 0
+		lineageTag: 9ad8d1ae-8e76-4330-ab0b-db448e733002
+
+	column AccountID
+		dataType: int64
+		isNullable: false
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: b565d6a1-8e33-476f-b87d-f13b5bde3208
+		summarizeBy: count
+		sourceColumn: AccountID
+
+		annotation SummarizationSetBy = Automatic
+
+	column ServiceAddress
+		dataType: string
+		sourceProviderType: nvarchar(max)
+		lineageTag: 12b17193-9166-4e35-a23d-b3cb6a7af74e
+		summarizeBy: none
+		sourceColumn: ServiceAddress
+
+		annotation SummarizationSetBy = Automatic
+
+	column CustomerID
+		dataType: int64
+		formatString: 0
+		sourceProviderType: int
+		lineageTag: a7570d57-9e17-4a51-992e-f11fa49bb486
+		summarizeBy: none
+		sourceColumn: CustomerID
+
+		annotation SummarizationSetBy = Automatic
+
+	column FullDate
+		dataType: string
+		isNullable: false
+		sourceProviderType: varchar(33)
+		lineageTag: f0cb1b85-36e6-40be-b98e-1fea355aef4b
+		summarizeBy: none
+		sourceColumn: FullDate
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalPayments
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: decimal(38, 2)
+		lineageTag: 4d1c78cb-f19c-478e-90c2-e13e75e1d536
+		summarizeBy: sum
+		sourceColumn: TotalPayments
+
+		annotation SummarizationSetBy = Automatic
+
+	column TotalRefunds
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		sourceProviderType: decimal(38, 2)
+		lineageTag: 6f69f83e-8e48-4a13-b68c-a3ddceae5675
+		summarizeBy: sum
+		sourceColumn: TotalRefunds
+
+		annotation SummarizationSetBy = Automatic
+
+	column RefundAudit
+		dataType: string
+		isNullable: false
+		sourceProviderType: varchar(17)
+		lineageTag: 0e76f4e0-23cc-4873-9d96-807dd7e32fb8
+		summarizeBy: none
+		sourceColumn: RefundAudit
+
+		annotation SummarizationSetBy = Automatic
+
+	partition RefundAbuse = m
+		mode: directQuery
+		source =
+				let
+				    Source = Sql.Database("(localdb)\MSSQLLocalDB", "UtilityCompany", [Query="#(lf)SELECT #(lf)     A.AccountID#(lf)    ,A.ServiceAddress#(lf)    ,A.CustomerID#(lf)#(tab),CONCAT(D.MonthName,' ',D.Year) AS FullDate#(lf)    ,SUM(CASE WHEN F.TransactionTypeID = 2 THEN F.TransactionAmount + F.TDUAmount ELSE 0 END) AS TotalPayments#(lf)    ,SUM(CASE WHEN F.TransactionTypeID = 3 THEN F.TransactionAmount + F.TDUAmount ELSE 0 END) AS TotalRefunds#(lf)    ,CASE #(lf)        WHEN SUM(CASE WHEN F.TransactionTypeID = 3 THEN F.TransactionAmount + F.TDUAmount ELSE 0 END) #(lf)             > SUM(CASE WHEN F.TransactionTypeID = 2 THEN F.TransactionAmount + F.TDUAmount ELSE 0 END) #(lf)             THEN 'Refund Abuse Flag'#(lf)        WHEN SUM(CASE WHEN F.TransactionTypeID = 2 THEN F.TransactionAmount + F.TDUAmount ELSE 0 END) #(lf)             = SUM(CASE WHEN F.TransactionTypeID = 3 THEN F.TransactionAmount + F.TDUAmount ELSE 0 END) #(lf)             THEN 'Payment Refund'#(lf)        ELSE 'Partial Refund'#(lf)    END AS RefundAudit#(lf)FROM FactUsage F#(lf)JOIN DimAccount A ON F.AccountID = A.AccountID#(lf)JOIN DimDate D ON F.DateID = D.DateID#(lf)WHERE F.TransactionTypeID IN (2, 3)#(lf)GROUP BY #(lf)    A.AccountID, A.ServiceAddress, A.CustomerID, CONCAT(D.MonthName,' ',D.Year)#(lf)HAVING #(lf)#(tab)SUM(CASE WHEN F.TransactionTypeID = 3 THEN F.TransactionAmount + F.TDUAmount ELSE 0 END) > 0", CommandTimeout=#duration(6, 22, 40, 0)])
+				in
+				    Source
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+
