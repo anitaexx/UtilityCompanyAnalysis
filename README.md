@@ -1,27 +1,73 @@
-Business Case Question: 
+🧾 README.md
+Utility Company Data Analysis
 
-**Flag customers who are marked as Residential in DimCustomer but whose accounts are Commercial or Small Commercial in DimAccount (data inconsistency).
+By Anita Eimiakhena (anitaexx)
 
-**Inactive accounts with recent activity
-List accounts marked as AccountStatus = 'Inactive' but still having usage transactions.
+📊 Project Overview
 
-**Same customer, multiple accounts
-Find customers (Residential + Small Comm) who have more than 1 account under their name 
+The Utility Company Analysis project demonstrates end-to-end data analytics — from data modeling and transformation using SQL and Python, to visualization and KPI tracking in Power BI.
+This simulation replicates a real-world utility company’s data environment, focusing on billing accuracy, data consistency, customer segmentation, and aging reports for decision support.
 
-** Find all customers with the same service address linked to multiple accounts
+🎯 Business Objectives
 
-**Refund abuse
-Find customers where the total Refund amount > total Payment amount, in a month
-Detect cases where a Refund was issued to a customer who never received a Bill.
+Flag inconsistent data: Identify customers labeled as Residential in DimCustomer but with Commercial accounts in DimAccount.
+Inactive accounts with recent activity: Detect inactive accounts still recording usage transactions.
+Duplicate or shared accounts: Find customers with multiple accounts or identical service addresses.
+Refund abuse detection: Highlight customers with total refunds greater than payments.
+Outstanding balance tracking: Calculate and flag customers with balances exceeding $1,000.
+Aging report: Generate 30/60/90/90+ day outstanding reports.
+Critical care compliance: Identify critical care customers charged late fees or eligible for TDU reimbursements.
 
-**High outstanding balances
-For each customer, calculate total Billed – total Payments – total Refunds + total Late Fees, and return those with balances > $1000.
+🧠 Key Insights & Impact
 
-**Create an aging report 30 days 60days 90days 90+days
+Improved data quality by detecting inconsistencies across customer and account dimensions.
+Automated aging report generation for faster finance reviews.
+Built SQL scripts for ETL and data validation.
+Created an interactive Power BI dashboard to visualize KPIs: late fees, outstanding balances, and refund ratios.
+Leveraged Python automation to generate and update CSV datasets dynamically.
 
-**Critical Care with late fees
-Critical Care customers should ideally not have service interruptions. Find all Critical Care Residential customers who were ever charged a Late Fee.
+⚙️ Tech Stack
+Tool	Purpose
+SQL Server	Database creation, DDL/DML operations, KPI queries
+Python (Pandas, Faker)	Synthetic data generation and ETL scripting
+Power BI	Dashboard and KPI reporting
+Excel	Data validation and aging analysis
+Git & GitHub	Version control and portfolio hosting
 
-**Critical Care total TDU charges month by month for reimbursement 
+📂 Project Files
 
+File	Description
+
+UtilityCompanyDDL.sql	Database schema creation (Dim/Fact tables)
+UtilityCompanyDML.sql	Insert and transformation queries
+UtilityCompanyAgingReport.sql	Aging calculation and outstanding balance logic
+DimAccountGeneration.py	Python script to generate synthetic account data
+FactUsageGeneration.py	Python script to generate usage transaction data
+DimAccount.csv, DimCustomer.csv, FactUsage.csv	Raw and transformed datasets
+UtilityCompanypbix.Report / .SemanticModel / .pbip	Power BI project files
+.gitignore	Excluded files for version control
+
+📈 Power BI Dashboard Highlights
+
+Customer Overview: Residential vs. Commercial segmentation
+Refund & Payment Summary: Trends by customer type
+Critical Care KPI Tracker: Monitoring TDU reimbursements and late fees
+
+🚀 How to Reproduce
+
+Clone this repository:
+git clone https://github.com/anitaexx/UtilityCompanyAnalysis.git
+Run the SQL scripts in order:
+UtilityCompanyDDL.sql
+UtilityCompanyDML.sql
+UtilityCompanyAgingReport.sql
+Execute Python scripts to populate CSVs.
+
+Open the Power BI report (UtilityCompanypbix.pbip) and connect to the data model.
+
+💡 Future Improvements
+
+Integrate Power Automate to refresh reports automatically.
+Connect Power BI directly to SQL Server for real-time insights.
+Implement anomaly detection with Python or DAX measures.
 
